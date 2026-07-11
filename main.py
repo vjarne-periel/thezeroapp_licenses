@@ -38,7 +38,8 @@ with st.form("new lic") :
   license_type = c[0].selectbox(":material/license: License type", ["PC","server"])
   license_cover = c[1].selectbox(":material/license: License cover", ["Trial","Premium"])
   expiry = st.date_input(":material/license: Expiry", "today", format="YYYY-MM-DD")
-  st.form_submit_button(":material/check: Submit", type="primary")
+  if st.form_submit_button(":material/check: Submit", type="primary") :
+    st.toast("Form submitted")
 
 # machine id
 st.caption(":material/computer: Machine identification", text_alignment="center")
@@ -83,16 +84,6 @@ else :
   machine_id = st.text_input(":material/computer: Machine ID", "").strip()
 
 
-license_data = {
-    "geologist_fname": fname,
-    "geologist_name" : name,
-    "geologist_cie"  : cie,
-    "expires": expiry,
-    "license_type" : license_type,
-    "license_cover" : license_cover,
-}
-
-
 key_file = st.file_uploader("Encrypted private key", type=["pem"])
 password = st.text_input("Private key password",type="password")
 
@@ -125,8 +116,8 @@ if hcont.button(":material/license: Generate license", type="primary") :
         )
 
     license_data["signature"] = signature.hex()
-    st.download_button( "Download license", json.dumps(license_data, indent=4), file_name="license.json", mime="application/json" )
-    st.success("License generated")
+    st.download_button( ":material/download: Download license", json.dumps(license_data, indent=4), file_name="license.json", mime="application/json" )
+    st.success(":material/license: License generated")
   
   except Exception as e:
     st.error(f"License generation failed: {e}")
