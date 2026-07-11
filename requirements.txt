@@ -6,3 +6,4 @@ opencv-python
 pandas
 numpy
 streamlit-webrtc
+pyzbar
