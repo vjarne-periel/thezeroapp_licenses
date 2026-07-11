@@ -7,7 +7,7 @@ import log
 
 #qrcode
 from PIL import Image
-import cv2
+from pyzbar.pyzbar import decode
 import qrcode
 
 #license
@@ -45,15 +45,22 @@ st.caption("Machine identification", text_alignment="center")
 qr_source = st.radio("QR source", ["Camera", "Image file", "Text"], horizontal=True)
 machine_id = None
 
+
+def read_qr(image):
+    decoded = decode(image)
+  if decoded:
+    return decoded[0].data.decode("utf-8")
+  return None
+
+
 if qr_source == "Camera":
   camera = st.camera_input("Scan machine QR code")
   if camera:
     img = Image.open(camera).convert("RGB")
-    img = np.array(img)
-    data, _, _ = cv2.QRCodeDetector().detectAndDecode(img)
+    machine_id = read_qr(img)
 
-    if data:
-      machine_id = data
+
+    if machine_id:
       st.success("Machine ID detected")
       st.code(machine_id)
         
@@ -65,11 +72,8 @@ elif qr_source == "Image file":
   qr_file = st.file_uploader( "Upload machine QR code", type=["png", "jpg", "jpeg"])
   if qr_file:
     img = Image.open(qr_file).convert("RGB")
-    img = np.array(img)
-    data, _, _ = cv2.QRCodeDetector().detectAndDecode(img)
-    
-    if data:
-      machine_id = data
+    machine_id = read_qr(img)    
+    if machine_id:
       st.success("Machine ID detected")
       st.code(machine_id)
     else:
