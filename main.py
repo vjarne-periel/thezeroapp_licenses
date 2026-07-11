@@ -1,6 +1,22 @@
 import streamlit as st
-import qrcode
+import numpy as np
+from datetime import date
+
+# identification
 import log
+
+#qrcode
+from PIL import Image
+import cv2
+import qrcode
+
+#license
+import json
+
+#security
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives import hashes
 
 log.logging()
 
@@ -9,6 +25,7 @@ st.image("img/Zero white title.png", width="stretch")
 "# Zero licenses"
 st.caption("GENERATE A NEW LICENSE", text_alignment="center")
 
+#licenses param
 with st.form("new lic") :
   st.caption("Geologist", text_alignment="center")
   c = st.columns(2)
@@ -23,6 +40,45 @@ with st.form("new lic") :
   expiry = st.date_input("Expiry", "today", format="YYYY-MM-DD")
   st.form_submit_button(":material/check: Submit", type="primary")
 
+# machine id
+st.caption("Machine identification", text_alignment="center")
+qr_source = st.radio("QR source", ["Camera", "Image file", "Text"], horizontal=True)
+machine_id = None
+
+if qr_source == "Camera":
+  camera = st.camera_input("Scan machine QR code")
+  if camera:
+    img = Image.open(camera).convert("RGB")
+    img = np.array(img)
+    data, _, _ = cv2.QRCodeDetector().detectAndDecode(img)
+
+    if data:
+      machine_id = data
+      st.success("Machine ID detected")
+      st.code(machine_id)
+        
+    else:
+      st.error("QR code not recognized")
+
+
+elif qr_source == "Image file":
+  qr_file = st.file_uploader( "Upload machine QR code", type=["png", "jpg", "jpeg"])
+  if qr_file:
+    img = Image.open(qr_file).convert("RGB")
+    img = np.array(img)
+    data, _, _ = cv2.QRCodeDetector().detectAndDecode(img)
+    
+    if data:
+      machine_id = data
+      st.success("Machine ID detected")
+      st.code(machine_id)
+    else:
+      st.error("QR code not recognized")
+
+else :
+  machine_id = st.text_input("Machine ID", "").strip()
+
+
 license_data = {
     "geologist_fname": fname,
     "geologist_name" : name,
@@ -32,5 +88,41 @@ license_data = {
     "license_cover" : license_cover,
 }
 
-key = st.file_uploader("Private password key", type=["pem"])
 
+key_file = st.file_uploader("Encrypted private key", type=["pem"])
+password = st.text_input("Private key password",type="password")
+
+hcont = st.container(horizontal_alignment="center")
+if hcont.button(":material/license: Generate license", type="primary") :
+  if not machine_id:
+    st.error("Missing machine ID")
+    st.stop()
+
+  if not key_file:
+    st.error("Missing private key")
+    st.stop()
+
+
+  try:
+    private_key = serialization.load_pem_private_key( key_file.read(), password=password.encode())
+
+    license_data = {
+            "geologist_fname": fname, "geologist_name": name, "geologist_cie": cie, "machine_id": machine_id,
+            "expires": str(expiry), "license_type": license_type, "license_cover": license_cover, }
+
+    message = json.dumps( license_data, sort_keys=True ).encode()
+    signature = private_key.sign(
+            message,
+            padding.PSS(
+                mgf=padding.MGF1(hashes.SHA256()),
+                salt_length=padding.PSS.MAX_LENGTH
+            ),
+            hashes.SHA256()
+        )
+
+    license_data["signature"] = signature.hex()
+    st.download_button( "Download license", json.dumps(license_data, indent=4), file_name="license.json", mime="application/json" )
+    st.success("License generated")
+  
+  except Exception as e:
+    st.error(f"License generation failed: {e}")
