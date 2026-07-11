@@ -40,7 +40,7 @@ expiry = st.date_input(":material/license: Expiry", "today", format="YYYY-MM-DD"
 
 # machine id
 st.caption(":material/computer: Machine identification", text_alignment="center")
-qr_source = st.radio(":material/computer: Machine ID source", ["Image file", "Text", "Camera"], horizontal=True)
+qr_source = st.radio(":material/computer: Machine ID source", ["Text", "Image file", "Camera"], horizontal=True)
 machine_id = None
 
 
