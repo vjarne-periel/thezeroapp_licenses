@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 from datetime import date
+import base64
 
 # identification
 import log
@@ -102,7 +103,9 @@ if hcont.button(":material/license: Generate license", type="secondary") :
             "geologist_fname": fname, "geologist_name": name, "geologist_cie": cie, "machine_id": machine_id,
             "expires": str(expiry), "license_type": license_type, "license_cover": license_cover, }
 
-    message = json.dumps( license_data, sort_keys=True ).encode()
+    # message = json.dumps( license_data, sort_keys=True ).encode()
+    message = json.dumps(license_data, sort_keys=True, separators=(",", ":")).encode()
+
     signature = private_key.sign(
             message,
             padding.PSS(
@@ -112,11 +115,16 @@ if hcont.button(":material/license: Generate license", type="secondary") :
             hashes.SHA256()
         )
 
+    # license_file = {
+    #   "data": license_data,
+    #   "signature": signature.hex(),
+    # }
+
     license_file = {
       "data": license_data,
-      "signature": signature.hex(),
+      "signature": base64.b64encode(signature).decode("ascii"),
     }
-
+    
     st.toast(":material/license: License generated")
 
     lic_name = f"zero_license-{license_type}_{fname}_{name}_{expiry}.json"
