@@ -113,8 +113,9 @@ if hcont.button(":material/license: Generate license", type="primary") :
         )
 
     license_data["signature"] = signature.hex()
-    st.download_button( ":material/download: Download license", json.dumps(license_data, indent=4), file_name="license.json", mime="application/json" )
-    st.success(":material/license: License generated")
+    st.toast(":material/license: License generated")
+    lic_name = f"zero_license-{license_type}_{fname}_{name}_{expiry}.json"
+    st.download_button( ":material/download: Download license", json.dumps(license_data, indent=4), file_name=lic_name, mime="application/json" )
   
   except Exception as e:
     st.error(f"License generation failed: {e}")
