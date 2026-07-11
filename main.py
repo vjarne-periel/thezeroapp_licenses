@@ -47,7 +47,7 @@ machine_id = None
 
 
 def read_qr(image):
-    decoded = decode(image)
+  decoded = decode(image)
   if decoded:
     return decoded[0].data.decode("utf-8")
   return None
