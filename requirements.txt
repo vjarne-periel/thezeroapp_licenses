@@ -1,0 +1,8 @@
+streamlit
+cryptography
+qrcode[pil]
+pillow
+opencv-python
+pandas
+numpy
+streamlit-webrtc
