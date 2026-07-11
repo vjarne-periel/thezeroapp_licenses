@@ -27,22 +27,22 @@ st.caption("GENERATE A NEW LICENSE", text_alignment="center")
 
 #licenses param
 with st.form("new lic") :
-  st.caption("Geologist", text_alignment="center")
+  st.caption(":material/person: Geologist", text_alignment="center")
   c = st.columns(2)
   fname = c[0].text_input(":material/person: First name", "")
   name = c[1].text_input(":material/person: Name", "")
   cie = st.text_input(":material/person: Company", "")
   
-  st.caption("License", text_alignment="center")
+  st.caption(":material/license: License", text_alignment="center")
   c = st.columns(2)
   license_type = c[0].selectbox(":material/license: License type", ["PC","server"])
   license_cover = c[1].selectbox(":material/license: License cover", ["Trial","Premium"])
-  expiry = st.date_input("Expiry", "today", format="YYYY-MM-DD")
+  expiry = st.date_input(":material/license: Expiry", "today", format="YYYY-MM-DD")
   st.form_submit_button(":material/check: Submit", type="primary")
 
 # machine id
-st.caption("Machine identification", text_alignment="center")
-qr_source = st.radio("QR source", ["Image file", "Text", "Camera"], horizontal=True)
+st.caption(":material/computer: Machine identification", text_alignment="center")
+qr_source = st.radio(":material/computer: Machine ID source", ["Image file", "Text", "Camera"], horizontal=True)
 machine_id = None
 
 
@@ -54,7 +54,7 @@ def read_qr(image):
 
 
 if qr_source == "Camera":
-  camera = st.camera_input("Scan machine QR code")
+  camera = st.camera_input(":material/computer: Scan machine QR code")
   if camera:
     img = Image.open(camera).convert("RGB")
     machine_id = read_qr(img)
@@ -69,7 +69,7 @@ if qr_source == "Camera":
 
 
 elif qr_source == "Image file":
-  qr_file = st.file_uploader( "Upload machine QR code", type=["png", "jpg", "jpeg"])
+  qr_file = st.file_uploader( ":material/computer: Upload machine QR code", type=["png", "jpg", "jpeg"])
   if qr_file:
     img = Image.open(qr_file).convert("RGB")
     machine_id = read_qr(img)    
@@ -80,7 +80,7 @@ elif qr_source == "Image file":
       st.error("QR code not recognized")
 
 else :
-  machine_id = st.text_input("Machine ID", "").strip()
+  machine_id = st.text_input(":material/computer: Machine ID", "").strip()
 
 
 license_data = {
