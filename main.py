@@ -42,7 +42,7 @@ with st.form("new lic") :
 
 # machine id
 st.caption("Machine identification", text_alignment="center")
-qr_source = st.radio("QR source", ["Camera", "Image file", "Text"], horizontal=True)
+qr_source = st.radio("QR source", ["Image file", "Text", "Camera"], horizontal=True)
 machine_id = None
 
 
