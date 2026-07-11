@@ -26,20 +26,17 @@ st.image("img/Zero white title.png", width="stretch")
 st.caption("GENERATE A NEW LICENSE", text_alignment="center")
 
 #licenses param
-with st.form("new lic") :
-  st.caption(":material/person: Geologist", text_alignment="center")
-  c = st.columns(2)
-  fname = c[0].text_input(":material/person: First name", "")
-  name = c[1].text_input(":material/person: Name", "")
-  cie = st.text_input(":material/person: Company", "")
+st.caption(":material/person: Geologist", text_alignment="center")
+c = st.columns(2)
+fname = c[0].text_input(":material/person: First name", "")
+name = c[1].text_input(":material/person: Name", "")
+cie = st.text_input(":material/person: Company", "")
   
-  st.caption(":material/license: License", text_alignment="center")
-  c = st.columns(2)
-  license_type = c[0].selectbox(":material/license: License type", ["PC","server"])
-  license_cover = c[1].selectbox(":material/license: License cover", ["Trial","Premium"])
-  expiry = st.date_input(":material/license: Expiry", "today", format="YYYY-MM-DD")
-  if st.form_submit_button(":material/check: Submit", type="primary") :
-    st.toast("Form submitted")
+st.caption(":material/license: License", text_alignment="center")
+c = st.columns(2)
+license_type = c[0].selectbox(":material/license: License type", ["PC","server"])
+license_cover = c[1].selectbox(":material/license: License cover", ["Trial","Premium"])
+expiry = st.date_input(":material/license: Expiry", "today", format="YYYY-MM-DD")
 
 # machine id
 st.caption(":material/computer: Machine identification", text_alignment="center")
@@ -83,8 +80,8 @@ elif qr_source == "Image file":
 else :
   machine_id = st.text_input(":material/computer: Machine ID", "").strip()
 
-
-key_file = st.file_uploader("Encrypted private key", type=["pem"])
+st.caption(":material/security: Private key", text_alignment="center")
+key_file = st.file_uploader(":material/security: Encrypted private key", type=["pem"])
 password = st.text_input("Private key password",type="password")
 
 hcont = st.container(horizontal_alignment="center")
