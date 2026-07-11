@@ -4,6 +4,8 @@ import log
 
 log.logging()
 
+st.image("img/Zero white title.png", width="stretch")
+
 "# Zero licenses"
 st.caption("Generate a new license", text_alignment="center")
 
