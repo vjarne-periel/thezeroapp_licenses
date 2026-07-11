@@ -12,7 +12,7 @@ def logging() :
   modal_pw()
 
 
-@st.dialog("Log")
+@st.dialog("Log", dismissible=False)
 def modal_pw() :
   if st.session_state.count >= 3 :
     st.error("Too mony tries")
