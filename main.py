@@ -85,7 +85,7 @@ key_file = st.file_uploader(":material/security: Encrypted private key", type=["
 password = st.text_input("Private key password",type="password")
 
 hcont = st.container(horizontal_alignment="center")
-if hcont.button(":material/license: Generate license", type="primary") :
+if hcont.button(":material/license: Generate license", type="secondary") :
   if not machine_id:
     st.error("Missing machine ID")
     st.stop()
@@ -115,7 +115,7 @@ if hcont.button(":material/license: Generate license", type="primary") :
     license_data["signature"] = signature.hex()
     st.toast(":material/license: License generated")
     lic_name = f"zero_license-{license_type}_{fname}_{name}_{expiry}.json"
-    st.download_button( ":material/download: Download license", json.dumps(license_data, indent=4), file_name=lic_name, mime="application/json" )
+    hcont.download_button( ":material/download: Download license", json.dumps(license_data, indent=4), file_name=lic_name, mime="application/json", type="primary")
   
   except Exception as e:
     st.error(f"License generation failed: {e}")
