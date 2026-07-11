@@ -18,7 +18,7 @@ def modal_pw() :
     st.error("Too mony tries")
 
   
-  with st.form("pws") :
+  with st.form("pws", border=False) :
     pw1 = st.text_input("Password 1", None, type="password")
     pw2 = st.text_input("Password 2", None, type="password")
     if st.form_submit_button(":material/check: Submit", type="primary") :
