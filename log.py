@@ -24,6 +24,7 @@ def modal_pw() :
     if st.form_submit_button(":material/check: Submit", type="primary") :
       if pw1 == st.secrets["pw1"] and pw2 == st.secrets["pw2"] :
         st.session_state.access = True
+        st.rerun()
       else :
         st.error("Wrong passwords")    
   
