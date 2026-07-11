@@ -5,7 +5,7 @@ import log
 log.logging()
 
 "# Zero licenses"
-st.caption("Generate a new license", text_lignmeent="center")
+st.caption("Generate a new license", text_alignmeent="center")
 
 c = st.columns(2)
 fname = c[0].text_input("First name", "")
