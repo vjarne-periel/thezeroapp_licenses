@@ -7,7 +7,7 @@ import base64
 import log
 
 #qrcode
-from PIL import Image
+from PIL import Image, ImageOps
 from pyzbar.pyzbar import decode
 import qrcode
 
@@ -45,10 +45,37 @@ qr_source = st.radio(":material/computer: Machine ID source", ["Text", "Image fi
 machine_id = None
 
 
-def read_qr(image):
-  decoded = decode(image)
-  if decoded:
-    return decoded[0].data.decode("utf-8")
+# def read_qr(image):
+#   decoded = decode(image)
+#   if decoded:
+#     return decoded[0].data.decode("utf-8")
+#   return None
+
+
+def read_qr(image: Image.Image):
+  """Try hard to decode a QR code from a possibly messy camera photo."""
+  base = image.convert("L")  # grayscale
+
+  candidates = []
+
+  # a few preprocessing variants, cheap to generate
+  for scale in (1.0, 0.5, 1.5, 2.0):
+    img = base
+    if scale != 1.0:
+      w, h = base.size
+      img = base.resize((int(w * scale), int(h * scale)))
+    img = ImageOps.autocontrast(img)
+    candidates.append(img)
+  
+  for base_img in list(candidates):
+    for angle in (90, 180, 270):
+      candidates.append(base_img.rotate(angle, expand=True))
+  
+  for cand in candidates:
+    decoded = decode(cand.convert("RGB"))
+    if decoded:
+      return decoded[0].data.decode("utf-8")
+
   return None
 
 
